@@ -4,112 +4,450 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hate Speech Detection</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+            background-color: #010409;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #0f1114;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgb(57, 58, 60);
+            padding: 40px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            
+        }
+
+        .description {
+            text-align: center;
+            color: #d1d5dc;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #ffffff;
+            font-size: 1.1em;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgb(57, 58, 60);
+            background-color: #0f1114;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 16px;
+            font-family: inherit;
+            resize: none;
+            min-height: 120px;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea::placeholder {
+            color: #999;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #0883fe;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .primary-btn {
+            background:  #0883fe;
+            color: white;
+            box-sizing: border-box;
+            /* border: 1px solid #e0e0e0; */
+        }
+        .primary-btn:hover {
+            background:  rgb(0, 126, 242);
+            transition: all 0.3s ease;
+            
+        }
+
+        .primary-btn:active {
+            scale: 0.995;
+            transition: all 0.3s ease;
+        }
+
+        .secondary-btn {
+            background: #0883fe;
+            color: #ffffff;
+            /* border: 1px solid #e0e0e0; */
+        }
+        .secondary-btn:hover {
+            background:  rgb(0, 126, 242);
+            transition: all 0.3s ease;
+            
+        }
+
+        .secondary-btn:hover {
+            scale: 0.995;
+            transition: all 0.3s ease;
+        }
+
+        .result-section {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 15px;
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        .result-normal {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border-left: 5px solid #28a745;
+        }
+
+        .result-offensive {
+            background: linear-gradient(135deg, #f8d7da, #f5c2c7);
+            border-left: 5px solid #dc3545;
+        }
+
+        .result-error {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-left: 5px solid #ffc107;
+        }
+
+        .result-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .result-text {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .result-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .confidence-bar {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .confidence-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .progress-normal {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .progress-offensive {
+            background: linear-gradient(135deg, #dc3545, #e74c3c);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0883fe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .examples {
+            margin-top: 40px;
+            padding: 25px;
+            background: #010409;
+            border-radius: 15px;
+            border: 1px solid rgb(57, 58, 60);
+        }
+
+        .examples h3 {
+            color: #ffffff;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .example-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .example-btn {
+            padding: 8px 15px;
+            background: #0f1114;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .example-btn:hover {
+            background: #0883fe;
+            border-color: #ffffff;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .button-section {
+                flex-direction: column;
+            }
+
+            .result-details {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <div class="header-content">
-                <i class="fas fa-shield-alt header-icon"></i>
-                <h1>Hate Speech Detection</h1>
-                <p>Analyze text content to detect hate speech, offensive language, or neutral content</p>
-            </div>
-        </header>
+        <h1>
+            <img src="../static/no-hate.png" alt="icon" width="42px"/>
+            Hate Speech Detection
+        </h1>
+        <div class="description">
+            This tool uses machine learning to detect hate speech and offensive language in text. 
+            Enter any text below to analyze its content.
+        </div>
 
-        <main class="main-content">
-            <div class="input-section">
-                <div class="input-container">
-                    <label for="textInput" class="input-label">
-                        <i class="fas fa-edit"></i>
-                        Enter text to analyze:
-                    </label>
-                    <textarea 
-                        id="textInput" 
-                        placeholder="Type or paste the text you want to analyze here..."
-                        rows="6"
-                        maxlength="1000"
-                    ></textarea>
-                    <div class="char-counter">
-                        <span id="charCount">0</span>/1000 characters
-                    </div>
-                </div>
-                
-                <div class="button-container">
-                    <button id="analyzeBtn" class="analyze-btn">
-                        <i class="fas fa-search"></i>
-                        Analyze Text
-                    </button>
-                    <button id="clearBtn" class="clear-btn">
-                        <i class="fas fa-trash"></i>
-                        Clear
-                    </button>
-                </div>
-            </div>
+        <div class="input-section">
+            <label for="textInput">Enter text to analyze</label>
+            <textarea id="textInput" placeholder="Type or paste your text here..."></textarea>
+        </div>
 
-            <div class="results-section" id="resultsSection" style="display: none;">
-                <div class="results-container">
-                    <h2 class="results-title">
-                        <i class="fas fa-chart-bar"></i>
-                        Analysis Results
-                    </h2>
-                    
-                    <div class="prediction-card" id="predictionCard">
-                        <div class="prediction-header">
-                            <h3 id="predictionLabel">Classification</h3>
-                            <span class="prediction-badge" id="predictionBadge"></span>
-                        </div>
-                        <p class="prediction-description" id="predictionDescription"></p>
-                    </div>
+        <div class="button-section">
+            <button class="primary-btn" onclick="analyzeText()">Analyze Text</button>
+            <button class="secondary-btn" onclick="clearText()">Clear</button>
+        </div>
 
-                    <div class="probabilities-card" id="probabilitiesCard" style="display: none;">
-                        <h3 class="card-title">
-                            <i class="fas fa-percentage"></i>
-                            Confidence Scores
-                        </h3>
-                        <div class="probability-bars" id="probabilityBars"></div>
-                    </div>
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Analyzing text...</p>
+        </div>
 
-                    <div class="processed-text-card">
-                        <h3 class="card-title">
-                            <i class="fas fa-cogs"></i>
-                            Processed Text
-                        </h3>
-                        <p class="processed-text" id="processedText"></p>
-                        <small class="text-note">This is how the text appears after preprocessing (cleaning, stemming, etc.)</small>
+        <div class="result-section" id="resultSection">
+            <div class="result-title" id="resultTitle"></div>
+            <div class="result-text" id="resultText"></div>
+            <div class="result-details">
+                <div class="confidence-bar">
+                    <div class="confidence-label" id="confidenceLabel">Confidence: 0%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="loading-section" id="loadingSection" style="display: none;">
-                <div class="loading-spinner">
-                    <i class="fas fa-spinner fa-spin"></i>
-                </div>
-                <p>Analyzing text...</p>
+        <div class="examples">
+            <h3>Try these examples</h3>
+            <div class="example-buttons">
+                <button class="example-btn" onclick="setExample('I love this beautiful weather today!')">Positive Text</button>
+                <button class="example-btn" onclick="setExample('You are such an amazing person!')">Compliment</button>
+                <button class="example-btn" onclick="setExample('This movie was terrible and boring')">Negative Opinion</button>
+                <button class="example-btn" onclick="setExample('I hate you so much, you should die')">Hate Speech</button>
+                <button class="example-btn" onclick="setExample('These people are so stupid and worthless')">Offensive</button>
             </div>
-
-            <div class="error-section" id="errorSection" style="display: none;">
-                <div class="error-container">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <h3>Error</h3>
-                    <p id="errorMessage"></p>
-                </div>
-            </div>
-        </main>
-
-        <footer class="footer">
-            <div class="footer-content">
-                <p>&copy; 2024 Hate Speech Detection Tool</p>
-                <div class="footer-links">
-                    <a href="#" class="footer-link">About</a>
-                    <a href="#" class="footer-link">Privacy</a>
-                    <a href="#" class="footer-link">Terms</a>
-                </div>
-            </div>
-        </footer>
+        </div>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        async function analyzeText() {
+            const textInput = document.getElementById('textInput');
+            const text = textInput.value.trim();
+
+            if (!text) {
+                alert('Please enter some text to analyze');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultSection').style.display = 'none';
+
+            try {
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+
+                const data = await response.json();
+
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+
+                if (data.status === 'success') {
+                    displayResult(data);
+                } else {
+                    displayError(data.error || 'An error occurred');
+                }
+            } catch (error) {
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                displayError('Network error: ' + error.message);
+            }
+        }
+
+        function displayResult(data) {
+            const resultSection = document.getElementById('resultSection');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultText = document.getElementById('resultText');
+            const confidenceLabel = document.getElementById('confidenceLabel');
+            const progressFill = document.getElementById('progressFill');
+
+            // Set result content
+            resultText.textContent = `"${data.text}"`;
+            
+            const confidence = Math.round(data.confidence * 100);
+            confidenceLabel.textContent = `Confidence: ${confidence}%`;
+            progressFill.style.width = `${confidence}%`;
+
+            // Set styling based on prediction
+            if (data.prediction === 'hate/offensive') {
+                resultSection.className = 'result-section result-offensive';
+                resultTitle.innerHTML = '⚠️ Hate/Offensive Speech Detected';
+                progressFill.className = 'progress-fill progress-offensive';
+            } else {
+                resultSection.className = 'result-section result-normal';
+                resultTitle.innerHTML = '✅ Normal Text';
+                progressFill.className = 'progress-fill progress-normal';
+            }
+
+            // Show result
+            resultSection.style.display = 'block';
+        }
+
+        function displayError(message) {
+            const resultSection = document.getElementById('resultSection');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultText = document.getElementById('resultText');
+            const confidenceLabel = document.getElementById('confidenceLabel');
+            const progressFill = document.getElementById('progressFill');
+
+            resultSection.className = 'result-section result-error';
+            resultTitle.innerHTML = '❌ Error';
+            resultText.textContent = message;
+            confidenceLabel.textContent = 'Confidence: N/A';
+            progressFill.style.width = '0%';
+
+            resultSection.style.display = 'block';
+        }
+
+        function clearText() {
+            document.getElementById('textInput').value = '';
+            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function setExample(text) {
+            document.getElementById('textInput').value = text;
+        }
+
+        // Allow Enter key to submit (Ctrl+Enter for new line)
+        document.getElementById('textInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.ctrlKey && !e.shiftKey) {
+                e.preventDefault();
+                analyzeText();
+            }
+        });
+    </script>
 </body>
 </html>
