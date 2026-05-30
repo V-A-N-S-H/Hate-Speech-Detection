@@ -1,2 +1,3 @@
-hate_speech_model.pkl
-vectorizer.pkl
+model.joblib
+model_metadata.joblib
+vectorizer.joblib
