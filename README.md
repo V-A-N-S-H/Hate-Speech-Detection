@@ -39,7 +39,6 @@ The system:
 - Pickle
 - HTML
 - CSS
-- JavaScript
 
 ---
 
