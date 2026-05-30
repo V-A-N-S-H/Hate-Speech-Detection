@@ -48,17 +48,12 @@ The system:
 ```text
 Hate-Speech-Detection/
 │
-├── static/                         # Static files
-│   ├── css/                        # CSS files
-│   ├── js/                         # JavaScript files
-│
 ├── templates/                      # HTML templates
 │   └── index.html
 │
 ├── Twitter.csv                     # Dataset
-├── hate_speech_model.pkl           # Trained ML model
-├── vectorizer.pkl                  # Saved TF-IDF vectorizer
 │
+├── main.ipynb                      # Jupyter Notebook for EDA, preprocessing, and model experimentation
 ├── train_model.py                  # Model training script
 ├── app.py                          # Flask web application
 │
