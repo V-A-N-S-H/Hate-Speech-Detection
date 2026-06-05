@@ -242,7 +242,62 @@
             font-size: 12px;
             color: var(--text-muted);
             text-align: right;
+        }
+
+        .input-actions-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 25px;
+        }
+
+        .enter-btn {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, #4facfe 100%);
+            border: none;
+            border-radius: 12px;
+            color: var(--bg-color);
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.2);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .enter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 242, 254, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .enter-btn:active {
+            transform: translateY(0);
+        }
+
+        .enter-btn:disabled {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .enter-btn:hover:not(:disabled) .btn-icon {
+            transform: translateX(-2px);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .assessment-box {
@@ -626,8 +681,17 @@
                 </div>
 
                 <!-- Text Area Input -->
-                <textarea id="text-input" placeholder="Type a tweet or statement here..." oninput="onTextInput()"></textarea>
-                <div class="char-counter" id="char-counter">0 / 280 characters</div>
+                <textarea id="text-input" placeholder="Type a tweet or statement here..." oninput="updateCharCounter()" onkeydown="onTextKeydown(event)"></textarea>
+                <div class="input-actions-row">
+                    <button id="analyze-btn" class="enter-btn" onclick="triggerAnalysis()" disabled>
+                        <span>Enter</span>
+                        <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 10 4 15 9 20"></polyline>
+                            <path d="M20 4v7a4 4 0 0 1-4 4H4"></path>
+                        </svg>
+                    </button>
+                    <div class="char-counter" id="char-counter">0 / 280 characters</div>
+                </div>
 
                 <!-- Inference Results Dashboard (Displays dynamically when text is entered) -->
                 <div id="results-dashboard" style="display: none;">
@@ -935,28 +999,57 @@
         function loadPreset(text) {
             const area = document.getElementById('text-input');
             area.value = text;
-            onTextInput();
+            updateCharCounter();
+            triggerAnalysis();
         }
 
-        // Debounce text inputs to avoid hammering the API
-        function onTextInput() {
+        // Update character counter in real-time
+        function updateCharCounter() {
             const area = document.getElementById('text-input');
             const text = area.value;
             document.getElementById('char-counter').innerText = `${text.length} / 280 characters`;
             
-            clearTimeout(debounceTimer);
+            const btn = document.getElementById('analyze-btn');
+            if (btn) {
+                btn.disabled = !text.trim();
+            }
+
+            if (!text.trim()) {
+                document.getElementById('results-dashboard').style.display = 'none';
+            }
+        }
+
+        // Handle enter key press on textarea
+        function onTextKeydown(event) {
+            // Trigger analysis when pressing Enter without Shift
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault(); // Prevent new line
+                triggerAnalysis();
+            }
+        }
+
+        // Trigger manual analysis on button click or enter press
+        function triggerAnalysis() {
+            const area = document.getElementById('text-input');
+            const text = area.value;
+            
             if (!text.trim()) {
                 document.getElementById('results-dashboard').style.display = 'none';
                 return;
             }
 
-            debounceTimer = setTimeout(() => {
-                fetchPredictions(text);
-            }, 300);
-        }
+            // Show a visual loading state on the button
+            const btn = document.getElementById('analyze-btn');
+            let originalBtnHtml = "";
+            if (btn) {
+                originalBtnHtml = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = `
+                    <span>Analyzing...</span>
+                    <svg class="spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>
+                `;
+            }
 
-        // Fetch predictions from Flask REST API
-        function fetchPredictions(text) {
             fetch('/api/predict', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -965,8 +1058,18 @@
             .then(res => res.json())
             .then(data => {
                 renderInferenceResults(data);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalBtnHtml;
+                }
             })
-            .catch(err => console.error("Error predicting:", err));
+            .catch(err => {
+                console.error("Error predicting:", err);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalBtnHtml;
+                }
+            });
         }
 
         // Render predicted outcomes in DOM
@@ -1049,6 +1152,7 @@
 
         // Fetch corpus-wide diagnostics and load charts
         window.addEventListener('DOMContentLoaded', () => {
+            updateCharCounter();
             fetch('/api/analytics')
             .then(res => res.json())
             .then(data => {

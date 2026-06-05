@@ -77,8 +77,8 @@ def main():
         X_vec, Y, test_size=0.2, random_state=42, stratify=Y
     )
 
-    print("Step 6: Training Logistic Regression model...")
-    model = LogisticRegression(max_iter=1000, random_state=42)
+    print("Step 6: Training Logistic Regression model with custom balanced class weights...")
+    model = LogisticRegression(max_iter=1000, random_state=42, class_weight={'hate_speech': 3.5, 'normal': 1.0, 'offensive_language': 0.6})
     model.fit(X_train, Y_train)
 
     print("Step 7: Evaluating model performance...")
