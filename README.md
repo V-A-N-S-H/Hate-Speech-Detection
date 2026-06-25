@@ -1,174 +1,392 @@
-# Hate Speech Detection using Machine Learning
+# Hate Speech Detection Using NLP
 
-A Machine Learning project that detects hate speech and offensive language from text data using Natural Language Processing (NLP).
+A Machine Learning and Natural Language Processing (NLP) project that detects hate speech, offensive language, and normal text using TF-IDF Vectorization and Logistic Regression. The application is built with Streamlit and provides real-time text classification along with interactive analytics and model insights.
 
-This project uses TF-IDF Vectorization and Logistic Regression to classify text as:
-- Hate/Offensive
-- Normal
+## Live Demo
 
-The project also includes a Flask web application for real-time predictions.
-
----
-
-# About The Project
-
-I made this project to learn:
-- Natural Language Processing (NLP)
-- Text preprocessing
-- Machine Learning classification
-- TF-IDF Vectorization
-- Flask web development
-- Model deployment
-
-The system:
-- Cleans and preprocesses text
-- Converts text into numerical vectors
-- Trains a machine learning model
-- Predicts whether text contains hate speech
-- Returns prediction confidence score
+Deployment:
+https://hate-speech-detection-5ouxxvzrbpfe4vzzt4uj2b.streamlit.app/
 
 ---
 
-# Technologies Used
+## Features
 
-- Python
-- Flask
-- Pandas
-- NumPy
-- Scikit-learn
-- Pickle
-- HTML
-- CSS
+* Detects Hate Speech, Offensive Language, and Normal text
+* Real-time text classification
+* Advanced text preprocessing
+* TF-IDF Vectorization
+* Logistic Regression classifier
+* Interactive analytics dashboard
+* Model performance metrics
+* Confidence score visualization
+* Feature attribution highlighting
+* Streamlit web application
 
 ---
 
-# Project Structure
+## Technologies Used
+
+* Python
+* Streamlit
+* Pandas
+* NumPy
+* Scikit-learn
+* NLTK
+* Joblib
+
+---
+
+## Project Structure
 
 ```text
-Hate-Speech-Detection/
+Hate-Speech-Detection-Using-NLP/
 │
-├── templates/                      # HTML templates
-│   └── index.html
-│
-├── Twitter.csv                     # Dataset
-│
-├── main.ipynb                      # Jupyter Notebook for EDA, preprocessing, and model experimentation
-├── train_model.py                  # Model training script
-├── app.py                          # Flask web application
-│
-├── requirements.txt                # Project dependencies
+├── app.py                     # Streamlit application
+├── train_model.py             # Model training script
+├── main.ipynb                 # Data preprocessing and model development
+├── Twitter.csv                # Dataset
+├── model.joblib               # Trained Logistic Regression model
+├── vectorizer.joblib          # TF-IDF Vectorizer
+├── model_metadata.joblib      # Model evaluation metrics
+├── requirements.txt           # Project dependencies
 ├── .gitignore
-│
-└── README.md                       # Project documentation
+└── README.md
 ```
 
 ---
 
-# Features
+## How It Works
 
-- Hate speech detection
-- Offensive language detection
-- Text preprocessing
-- TF-IDF Vectorization
-- Logistic Regression model
-- Flask web application
-- Confidence score prediction
-- Web interface for testing
+1. Load the Twitter Hate Speech dataset.
+2. Clean and preprocess the text by:
 
----
+   * Converting text to lowercase
+   * Removing URLs, mentions, hashtags, punctuation, and stopwords
+   * Applying stemming using NLTK.
+3. Convert cleaned text into TF-IDF feature vectors.
+4. Split the dataset into training and testing sets.
+5. Train a Logistic Regression classifier.
+6. Evaluate the model using Accuracy, Precision, Recall, F1-Score, and Confusion Matrix.
+7. Save the trained model, vectorizer, and metadata.
+8. Accept user input through the Streamlit application.
+9. Predict whether the text belongs to:
 
-# Machine Learning Workflow
-
-1. Load Twitter dataset  
-2. Clean and preprocess text  
-3. Remove URLs, mentions, hashtags, and punctuation  
-4. Convert text into TF-IDF vectors  
-5. Split dataset into train and test sets  
-6. Train Logistic Regression model  
-7. Evaluate model accuracy  
-8. Save trained model and vectorizer  
-9. Predict hate speech from user input  
+   * Hate Speech
+   * Offensive Language
+   * Normal
 
 ---
 
-# Installation
+## Dataset
 
-## Step 1 — Clone the Repository
+The project uses the Twitter Hate Speech Dataset containing labeled tweets for text classification.
+
+### Classes
+
+* Hate Speech
+* Offensive Language
+* Normal
+
+---
+
+## Installation
+
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/V-A-N-S-H/Hate-Speech-Detection.git
-cd Hate-Speech-Detection
+git clone https://github.com/V-A-N-S-H/Hate-Speech-Detection-Using-NLP.git
 ```
 
----
+### 2. Navigate to the project directory
 
-## Step 2 — Install Requirements
+```bash
+cd Hate-Speech-Detection-Using-NLP
+```
+
+### 3. Install the required dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
-# How To Run The Project
-
-## Step 1 — Train The Model
+### 4. Run the application
 
 ```bash
-python train_model.py
+streamlit run app.py
 ```
-
-This will:
-- Train the model
-- Save `hate_speech_model.pkl`
-- Save `vectorizer.pkl`
 
 ---
 
-## Step 2 — Run Flask Application
+## Machine Learning Workflow
+
+* Data Cleaning
+* Text Preprocessing
+* Stopword Removal
+* Stemming
+* TF-IDF Vectorization
+* Train-Test Split
+* Logistic Regression
+* Model Evaluation
+* Real-Time Prediction
+
+---
+
+## Model Used
+
+* Logistic Regression
+
+---
+
+## NLP Techniques
+
+* Text Cleaning
+* Tokenization
+* Stopword Removal
+* Stemming
+* TF-IDF Vectorization
+
+---
+
+## Model Evaluation
+
+The model is evaluated using:
+
+* Accuracy
+* Precision
+* Recall
+* F1-Score
+* Confusion Matrix
+* Classification Report
+
+---
+
+## Future Improvements
+
+* Deep Learning models (LSTM, GRU)
+* Transformer-based models (BERT, RoBERTa)
+* Multilingual hate speech detection
+* Batch prediction using CSV upload
+* Explainable AI (SHAP/LIME)
+* API deployment using FastAPI
+
+---
+
+## Contributing
+
+Contributions are welcome.
+
+1. Fork the repository.
+2. Create a new branch.
+3. Commit your changes.
+4. Push the branch.
+5. Open a Pull Request.
+
+---
+
+## Author
+
+**Vansh**
+
+GitHub: https://github.com/V-A-N-S-H
+
+---
+
+## Support
+
+If you found this project helpful, consider giving it a star on GitHub.
+# Hate Speech Detection Using NLP
+
+A Machine Learning and Natural Language Processing (NLP) project that detects hate speech, offensive language, and normal text using TF-IDF Vectorization and Logistic Regression. The application is built with Streamlit and provides real-time text classification along with interactive analytics and model insights.
+
+## Live Demo
+
+Deployment:
+https://hate-speech-detection-5ouxxvzrbpfe4vzzt4uj2b.streamlit.app/
+
+---
+
+## Features
+
+* Detects Hate Speech, Offensive Language, and Normal text
+* Real-time text classification
+* Advanced text preprocessing
+* TF-IDF Vectorization
+* Logistic Regression classifier
+* Interactive analytics dashboard
+* Model performance metrics
+* Confidence score visualization
+* Feature attribution highlighting
+* Streamlit web application
+
+---
+
+## Technologies Used
+
+* Python
+* Streamlit
+* Pandas
+* NumPy
+* Scikit-learn
+* NLTK
+* Joblib
+
+---
+
+## Project Structure
+
+```text
+Hate-Speech-Detection-Using-NLP/
+│
+├── app.py                     # Streamlit application
+├── train_model.py             # Model training script
+├── main.ipynb                 # Data preprocessing and model development
+├── Twitter.csv                # Dataset
+├── model.joblib               # Trained Logistic Regression model
+├── vectorizer.joblib          # TF-IDF Vectorizer
+├── model_metadata.joblib      # Model evaluation metrics
+├── requirements.txt           # Project dependencies
+├── .gitignore
+└── README.md
+```
+
+---
+
+## How It Works
+
+1. Load the Twitter Hate Speech dataset.
+2. Clean and preprocess the text by:
+
+   * Converting text to lowercase
+   * Removing URLs, mentions, hashtags, punctuation, and stopwords
+   * Applying stemming using NLTK.
+3. Convert cleaned text into TF-IDF feature vectors.
+4. Split the dataset into training and testing sets.
+5. Train a Logistic Regression classifier.
+6. Evaluate the model using Accuracy, Precision, Recall, F1-Score, and Confusion Matrix.
+7. Save the trained model, vectorizer, and metadata.
+8. Accept user input through the Streamlit application.
+9. Predict whether the text belongs to:
+
+   * Hate Speech
+   * Offensive Language
+   * Normal
+
+---
+
+## Dataset
+
+The project uses the Twitter Hate Speech Dataset containing labeled tweets for text classification.
+
+### Classes
+
+* Hate Speech
+* Offensive Language
+* Normal
+
+---
+
+## Installation
+
+### 1. Clone the repository
 
 ```bash
-python app.py
+git clone https://github.com/V-A-N-S-H/Hate-Speech-Detection-Using-NLP.git
 ```
 
-Then open:
+### 2. Navigate to the project directory
 
-```text
-http://127.0.0.1:5000
+```bash
+cd Hate-Speech-Detection-Using-NLP
+```
+
+### 3. Install the required dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Run the application
+
+```bash
+streamlit run app.py
 ```
 
 ---
 
-# Model Used
+## Machine Learning Workflow
 
-- Logistic Regression
-- TF-IDF Vectorizer
-
----
-
-# Dataset
-
-- Twitter Hate Speech Dataset
-
----
-
-# Example Predictions
-
-| Input Text | Prediction |
-|---|---|
-| I love this beautiful day | Normal |
-| You are such an idiot | Hate/Offensive |
-| Have a wonderful day | Normal |
+* Data Cleaning
+* Text Preprocessing
+* Stopword Removal
+* Stemming
+* TF-IDF Vectorization
+* Train-Test Split
+* Logistic Regression
+* Model Evaluation
+* Real-Time Prediction
 
 ---
 
-# Requirements
+## Model Used
 
-```text
-flask
-flask-cors
-numpy
-pandas
-scikit-learn
-pickle
-```
+* Logistic Regression
+
+---
+
+## NLP Techniques
+
+* Text Cleaning
+* Tokenization
+* Stopword Removal
+* Stemming
+* TF-IDF Vectorization
+
+---
+
+## Model Evaluation
+
+The model is evaluated using:
+
+* Accuracy
+* Precision
+* Recall
+* F1-Score
+* Confusion Matrix
+* Classification Report
+
+---
+
+## Future Improvements
+
+* Deep Learning models (LSTM, GRU)
+* Transformer-based models (BERT, RoBERTa)
+* Multilingual hate speech detection
+* Batch prediction using CSV upload
+* Explainable AI (SHAP/LIME)
+* API deployment using FastAPI
+
+---
+
+## Contributing
+
+Contributions are welcome.
+
+1. Fork the repository.
+2. Create a new branch.
+3. Commit your changes.
+4. Push the branch.
+5. Open a Pull Request.
+
+---
+
+## Author
+
+**Vansh**
+
+GitHub: https://github.com/V-A-N-S-H
+
+---
+
+## Support
+
+If you found this project helpful, consider giving it a star on GitHub.
