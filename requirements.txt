@@ -1,10 +1,6 @@
 streamlit
-plotly
-wordcloud
+scikit-learn==1.8.0
 joblib
-scikit-learn
 pandas
 numpy
 nltk
-flask
-requests
